@@ -1,6 +1,6 @@
 <?php
 
-class String extends Object
+class EV_String extends EV_Object
 {
 	
 	/**

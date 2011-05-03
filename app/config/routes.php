@@ -31,4 +31,3 @@ $_config['routes']['(:any)'] = "$1";
  */
 $_config['routes']["_default_controller"] = "home";
 $_config['routes']["_404_error"] = "";
-$_config['routes']["_devel/(:any)"] = "devel/$1";

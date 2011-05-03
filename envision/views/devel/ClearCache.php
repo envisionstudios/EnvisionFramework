@@ -1,0 +1,1 @@
+<p><strong>Application cache cleard!</strong></p>

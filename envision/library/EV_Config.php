@@ -1,6 +1,6 @@
 <?php
 
-class Config extends Object {
+class EV_Config extends EV_Object {
 	
 	/**
 	 * Stores the instance of the configuration
@@ -27,7 +27,7 @@ class Config extends Object {
 		
 		// If the directory does not exist, exit with error
 		if (!is_dir($configPath)) {
-			throw new Exception("The configuration path '$configPath' does not exist.");	
+			trigger_error("The configuration path '$configPath' does not exist.", E_USER_ERROR);	
 		}
 		
 		// Create handle
@@ -100,7 +100,7 @@ class Config extends Object {
 		if (self::$_instance == null) {
 			
 			// instantiate and load config
-			self::$_instance = new Config();
+			self::$_instance = new EV_Config();
 			self::$_instance->loadConfiguration();
 				
 		}

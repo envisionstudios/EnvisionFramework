@@ -10,7 +10,7 @@
 define('EV_VERSION', '0.1.0');
 
 // Minimum PHP version required
-define('MIN_PHP_VERSION', '2.7.0');
+define('MIN_PHP_VERSION', '5.3.0');
 
 /*
  *****************************************
@@ -37,9 +37,12 @@ session_start();
  *****************************************
  */
 
+// Verify PHP version
 if (strnatcmp(PHP_VERSION, MIN_PHP_VERSION) < 0) {
-	throw new Exception('Your current PHP version is lower than the required minimum. Please ensure you have PHP version '.MIN_PHP_VERSION.' or later installed.');
+	trigger_error('Your current PHP version is lower than the required minimum. Please ensure you have PHP version '.MIN_PHP_VERSION.' or later installed.', E_USER_ERROR);
 }
+
+generateClassManifest();
 
 /*
  *****************************************
@@ -47,7 +50,7 @@ if (strnatcmp(PHP_VERSION, MIN_PHP_VERSION) < 0) {
  *****************************************
  */
 
-$ev = new Envision();
+$ev = new EV_Envision();
 
 // Distpatch our request
 $dispatch = $ev->Router->Dispatch();

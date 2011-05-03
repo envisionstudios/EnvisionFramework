@@ -1,17 +1,17 @@
 <?php
 
-class Router extends Object {
+class EV_Router extends EV_Object {
 
 	/**
 	 * Dispatches the current request to the relevant controller.
 	 */
 	public function Dispatch() {
 
-		$routes = Config::get('routes');
+		$routes = EV_Config::get('routes');
 		
 		// If the routes is null or not an array, throw exception
 		if ($routes == null || !is_array($routes)) {
-			// TOOD: Throw exception	
+			trigger_error('Cannot find any valid routes within the configuration.', E_USER_ERROR);
 		}
 		
 		// Get the orignal URL
@@ -29,16 +29,22 @@ class Router extends Object {
 			// use the default controller.
 			$controller = $routes["_default_controller"];
 			$action = (array_key_exists("_default_action", $routes) ? $routes["_default_action"] : "index");
-		
+			
 		} else {
 
 			// Generate the routed URL
-			$routedUrl = self::generateUrlRoute($originalUrl);
+			$routedUrl = $originalUrl;
 			
-			// If there was no route found, then we need to set the 404
-			if ($routedUrl == null) {
-				$controller = $routes["_404_error"];
-				$action = "index";
+			if (preg_match('/^devel(.*)$/i', $routedUrl) === false) {
+				
+				$routedUrl = self::generateUrlRoute($originalUrl);
+				
+				// If there was no route found, then we need to set the 404
+				if ($routedUrl == null) {
+					$controller = $routes["_404_error"];
+					$action = "index";
+				}
+			
 			}
 			
 			// Explode the url array
@@ -52,7 +58,7 @@ class Router extends Object {
 			array_shift($urlArray);
 			
 			// If there is an element at 0, this is the action
-			if (isset($urlArray[0])) {
+			if (isset($urlArray[0]) && strlen($urlArray[0]) > 0) {
 				// set the action
 				$action = $urlArray[0];
 				
@@ -70,7 +76,7 @@ class Router extends Object {
 		
 		// Create the controller class name
 		$className = ucwords($controller).'Controller';
-		$methodName = ucwords($action);
+		$methodName = $action;
 		
 		// If the method exists, dispatch the route.
 		if (method_exists($className, $methodName)) {
@@ -87,9 +93,9 @@ class Router extends Object {
 			return $dispatch;
 			
 		} else {
-			// TODO: Error code here
 			
 			// Show the 404 error
+			// TODO: Dispatch to 404
 			include(FRAMEWORK_PATH."sys_pages/404.php");
 			exit();
 			
@@ -106,11 +112,11 @@ class Router extends Object {
 	private static function generateUrlRoute($url) {
 
 		// use the global routes
-		$routes = Config::get('routes');
+		$routes = EV_Config::get('routes');
 		
 		// If the routes is null or not an array, throw exception
 		if ($routes == null || !is_array($routes)) {
-			// TOOD: Throw exception	
+			trigger_error('Cannot find any valid routes within the configuration.', E_USER_ERROR);
 		}
 		
 		// Loop through the routes, skipping our "reserved" routes
@@ -143,8 +149,8 @@ class Router extends Object {
 	private static function parseUrlPattern($urlPattern) {
 		
 		// Create the search and replacements
-		$search = array('(:num)', '(:any)');
-		$replacements = array('(\d+)', '([^\/]+)');
+		$search = array('(:num)', '(:any)', '(:all)');
+		$replacements = array('(\d+)', '([^\/]+)', '(.*)');
 		
 		// parse the pattern
 		$pattern = '/'.str_replace($search, $replacements, $urlPattern).'/';

@@ -3,7 +3,7 @@
 /**
  * Object class. This object is the top item in the type inheritance tree. That is, every object defined within ContentEngine extends this base class.
  */
-class Object {
+class EV_Object {
 
 
 	/**
@@ -27,6 +27,13 @@ class Object {
 		// Return the variable
 		return var_export($this, true);
 		
+	}
+	
+	/**
+	 * Returns the name of the current class. Late static binding is used to ensure derived classes return the correct name.
+	 */
+	public static function getName() {
+		return get_called_class();
 	}
 	
 }

@@ -49,6 +49,8 @@ function generateClassManifest() {
 	// List the paths to generate the manifest from.
 	$autoloadPaths = array(
 		FRAMEWORK_PATH.'library/',
+		FRAMEWORK_PATH.'controllers/',
+		FRAMEWORK_PATH.'library/',
 		APP_PATH.'controllers/',
 		APP_PATH.'library/',
 		APP_PATH.'models/'
@@ -192,7 +194,7 @@ function iterateDirectories($path, &$files) {
 function evErrorHandler($errorCode, $errorMessage, $errorFile, $errorLine) {
 	
 	// Create the exception
-	$ex = new FrameworkException($errorMessage, $errorCode, $errorFile, $errorLine);
+	$ex = new EV_FrameworkException($errorMessage, $errorCode, $errorFile, $errorLine);
 	
 	// Handle the exception
 	evExceptionHandler($ex);

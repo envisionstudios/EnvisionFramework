@@ -1,6 +1,6 @@
 <?php
 
-class Uuid extends Object {
+class EV_Uuid extends EV_Object {
 
 	/**
 	 * Generate a universally unique identifier (UUID) string

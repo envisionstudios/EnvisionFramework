@@ -1,10 +1,10 @@
 <?php
 
-class HomeController extends Base_Controller {
+class HomeController extends EV_Controller {
 
 	function Index() {
 
-		
+		CodeSnippet::getAll();
 		
 	}
 	

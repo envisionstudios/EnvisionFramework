@@ -1,34 +1,41 @@
 <?php
 
-class Template extends Object {
+class EV_Template extends EV_Object {
 	
 	/**
 	 * Stores values that can later be used in our template.
 	 * @var array. Collection of variables to use in our templates.
 	 */
-	protected $_vars = array();
+	protected $vars = array();
 	
 	/**
 	 * The controller for the current template.
 	 * @var string
 	 */
-	protected $_controller;
+	protected $controller;
 	
 	/**
 	 * The action for the current controller.
 	 * @var string
 	 */
-	protected $_action;
+	protected $action;
+	
+	/**
+	 * Determines if the current request is for a system request
+	 * @var string
+	 */
+	protected $isSystem;
 	
 	/**
 	 * The default constructor for the template.
 	 * @param string $controller
 	 * @param string $action
 	 */
-	function __construct($controller, $action) {
+	function __construct($controller, $action, $isSystem = false) {
 		// Set the controller and action
-		$this->_action = $action;
-		$this->_controller = $controller;
+		$this->controller = $controller;
+		$this->action = $action;
+		$this->isSystem = $isSystem;
 	}
 	
 	/**
@@ -37,10 +44,10 @@ class Template extends Object {
 	public function Render() {
 				
 		// extract our variables.
-		extract($this->_vars);
+		extract($this->vars);
 		
 		// generate our layout file name
-		$layoutFile = APP_PATH.'views/Page.php';
+		$layoutFile = ($this->isSystem ? FRAMEWORK_PATH : APP_PATH).'views/Page.php';
 				
 		// parse the template
 		$output = $this->parseTemplate($layoutFile, true);
@@ -54,7 +61,7 @@ class Template extends Object {
 
 		// If the file does not exist, throw an error
 		if (!file_exists($file)) {
-			throw new Exception("Unable to load Layout. '$file' does not exist.");	
+			trigger_error("Unable to load Layout. '$file' does not exist.", E_USER_ERROR);	
 		}
 		
 		// Get the contents of the file.
@@ -63,12 +70,14 @@ class Template extends Object {
 		// If we are rendering the layout, we need to parse the view and load it into {$Layout}
 		if ($isLayout) {
 			
-			// generate our view file name
-			$viewFile = APP_PATH.'views/'.$this->_controller.'/'.ucwords($this->_action).'.php';
+			$viewPathSuffix = 'views/'.$this->controller.'/'.ucwords($this->action).'.php'; 
 			
-			// Load the view file.
+			// generate our view file name
+			$viewFile = APP_PATH.$viewPathSuffix;
+			
+			// Check to see if it as system view.
 			if (!file_exists($viewFile)) {
-				throw new Exception("Unable to load View. '$viewFile' does not exist.");
+				$viewFile = FRAMEWORK_PATH.$viewPathSuffix;
 			}
 			
 			// If there is the {$Layout} tag, replace it with the contents of the view

@@ -1,6 +1,6 @@
 <?php
 
-class Envision extends Object {
+class EV_Envision extends EV_Object {
 	
 	/**
 	 * The router object to handle and manipulate routes.
@@ -13,7 +13,7 @@ class Envision extends Object {
 	 */
 	public function __construct() {
 		// Instantiate the router object
-		$this->Router = new Router();
+		$this->Router = new EV_Router();
 	}
 	
 }
